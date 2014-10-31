@@ -1,5 +1,3 @@
-
-
 class Deck
 {
     public static final int MAX_SIZE = 52

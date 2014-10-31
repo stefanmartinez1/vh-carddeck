@@ -1,4 +1,3 @@
-package 
 import Deck;
 
 def deck = new Deck()

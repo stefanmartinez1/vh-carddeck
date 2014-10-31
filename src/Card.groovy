@@ -1,4 +1,3 @@
-
 class Card
 {
     private int rank
