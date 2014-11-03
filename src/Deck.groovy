@@ -31,9 +31,9 @@ class Deck
         return cards.isEmpty()
     }
 
-    //methods
+    // methods
 
-    //add - puts a Card at the end ("bottom") of the pile.  It just uses the ArrayList method
+    // add - puts a Card at the end ("bottom") of the pile.  It just uses the List method
     public void add(Card aCard)
     {
         cards.add(aCard)
@@ -44,7 +44,7 @@ class Deck
         cards.clear()
     }
 
-    //getTopCard - removes and returns the "top" card of the pile.  It just uses the ArrayList method
+    // getTopCard - removes and returns the "top" card of the pile.  It just uses the List method
     public Card getTopCard()
     {
         return cards.remove(0)
