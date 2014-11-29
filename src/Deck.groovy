@@ -8,7 +8,7 @@ class Deck
         reset()
     }
     
-    private void reset()
+    private def reset()
     {
         cards = []
         addSuit(Suit.SPADES)
@@ -17,7 +17,7 @@ class Deck
         addSuit(Suit.CLUBS)  
     }
         
-    private void addSuit(Suit suit)
+    private def void addSuit(Suit suit)
     {
         for (int i = 2; i <= Card.ACE; i++)
         {
@@ -26,7 +26,7 @@ class Deck
         }
     }
 
-    public boolean isEmpty()
+    def boolean isEmpty()
     {
         return cards.isEmpty()
     }
@@ -34,28 +34,28 @@ class Deck
     // methods
 
     // add - puts a Card at the end ("bottom") of the pile.  It just uses the List method
-    public void add(Card aCard)
+    def void add(Card aCard)
     {
         cards.add(aCard)
     }
 
-    public void clear()
+    def void clear()
     {
         cards.clear()
     }
 
     // getTopCard - removes and returns the "top" card of the pile.  It just uses the List method
-    public Card getTopCard()
+    def getTopCard()
     {
         return cards.remove(0)
     }
 
-    public int size()
+    def int size()
     {
         return cards.size()
     }
 
-    public Card deal()
+    def deal()
     {
         if(isEmpty())
         {
@@ -67,7 +67,7 @@ class Deck
         }
     }
 
-    public Card[] deal(int number)
+    def deal(int number)
     {
         if (number > cards.size())
         {
@@ -75,8 +75,8 @@ class Deck
         }
         else
         {
-            Card[] hand = new Card[number]
-            for(int i = 0; i < hand.length; i++)
+            def hand = []
+            for(int i = 0; i < number; i++)
             {
                 hand[i] = deal()
             }
@@ -84,7 +84,16 @@ class Deck
         }
     }
     
-    public void shuffle()
+    def void shuffle()
+    {
+        // The algorithm used here is Fisher-Yates algorithm:
+        // http://en.wikipedia.org/wiki/Fisher-Yates_shuffle
+        Collections.shuffle(cards)
+    }
+
+    // The original inefficient hunt and peck shuffle algorithm
+    /*
+    def void shuffle()
     {
         if (cards.size() < MAX_SIZE)
         {
@@ -92,24 +101,27 @@ class Deck
             return
         }
         Random gen = new Random()
-        Card[] array = new Card[MAX_SIZE]
+        def shuffled = []
         while (cards.size() > 0)
         {
             Card card = cards.remove(cards.size() - 1)
             int i = gen.nextInt(MAX_SIZE)
-            while (array[i] != null)
+            while (shuffled[i] != null)
             {
                 i = gen.nextInt(MAX_SIZE)
             }                
-            array[i] = card
+            shuffled[i] = card
         }
-        for (Card card : array)
+        // Put all the shuffled cards back in the original list
+        // TODO: Shouldn't we just do cards = shuffled ?
+        for (Card card : shuffled)
         {
             cards.add(card)
         }
     }
+    */
 
-    public String toString()
+    def String toString()
     {
         String result = ""
         for(Card card : cards)
