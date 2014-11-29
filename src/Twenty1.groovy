@@ -7,25 +7,35 @@ def console = System.console()
 
 Random gen = new Random()
 
-println("\nHow many games do you want to play?")
+// ALL THE WINNING ASCII
+
+String p1Wins = ("______ _                         __    _    _ _           _ _\n| ___ \\ |                       /  |  | |  | (_)         | | |\n| |_/ / | __ _ _   _  ___ _ __  `| |  | |  | |_ _ __  ___| | |\n|  __/| |/ _` | | | |/ _ \\ '__|  | |  | |/\\| | | '_ \\/ __| | |\n| |   | | (_| | |_| |  __/ |    _| |_ \\  /\\  / | | | \\__ \\_|_|\n\\_|   |_|\\__,_|\\__, |\\___|_|    \\___/  \\/  \\/|_|_| |_|___(_|_)\n                __/ |                                          \n               |___/                                           \n")
+
+String p2Wins = ("______ _                         _____   _    _ _           _ _\n| ___ \\ |                       / __  \\ | |  | (_)         | | |\n| |_/ / | __ _ _   _  ___ _ __  `' / /' | |  | |_ _ __  ___| | |\n|  __/| |/ _` | | | |/ _ \\ '__|   / /   | |/\\| | | '_ \\/ __| | |\n| |   | | (_| | |_| |  __/ |    ./ /___ \\  /\\  / | | | \\__ \\_|_|\n\\_|   |_|\\__,_|\\__, |\\___|_|    \\_____/  \\/  \\/|_|_| |_|___(_|_)\n                __/ |                                            \n               |___/                                             \n")
+
+String welcome = (" --------------------------\n|                          |\n|       This is 21.        |\n|  Welcome to the Future.  |\n|                          |\n|   By: Stefan Martinez    |\n --------------------------")
+
+println("\n\n\n" + welcome)
+println("|--------------------------|\n\n\n\nWhat is your name?\n")
+String name = console.readLine()
+println()
+println("Welcome, " + name + ".\nHow many games do you want to play? (Numbers only please)")
 
 int totalNumGames = (console.readLine()).toInteger()
 
 
 for (int game = 1; game <= totalNumGames; game++)  {
 //1. Dealer will shuffle the deck.
-
+println()
 deck.shuffle()
-
-
 
 //2. You are dealt two cards. Dealer is dealt two cards.
 int numPlayers = 2
 
     def hand1 = deck.deal(2)
-    println("Player 1's Hand: " + hand1)
+    println(name + "'s Hand: " + hand1)
     def hand2 = deck.deal(2)
-    println("Player 2's Hand: " + hand2 + "\n")
+    println("Dealer's Hand: " + hand2 + "\n")
 
 //4. Your cards are added, Dealer's cards are added.
 
@@ -35,24 +45,36 @@ int player2Rank = hand2[0].rank + hand2[1].rank
 boolean player1Bust = false
 boolean player2Bust = false
 
+if (player1Rank > 21)
+{
+    player1Bust = true
+}
+if (player2Rank > 21)
+{
+    player2Bust = true
+}
+
 if (player1Rank == 21 && player1Bust == false && player2Bust == false)
 {
-    println("Player 1 Wins! with: " + hand1)
-    println("Player 2 Had: " + hand2 + "\n")
+    println(p1Wins)
+    println(name + " Wins! with: " + hand1)
+    println("Dealer Had: " + hand2 + "\n")
     break
 }
 // If player 2 gets to 21, and neither him nor player 1 have busted, he wins
 else if (player2Rank == 21 && player1Bust == false && player2Bust == false)
 {
-    println("Player 2 Wins! with: " + hand2)
-    println("Player 1 Had: " + hand1 + "\n")
+    println(p2Wins)
+    println("Dealer Wins! with: " + hand2)
+    println(name + " Had: " + hand1 + "\n")
     break
 }
+
 
 //5. You can choose to be hit, or stand.
 if (player1Bust == false && player2Bust == false) {
 
-println("Hit or Stand?")
+println("Do you want to Hit or Stand?")
 
 
 while(player1Bust == false)
@@ -66,24 +88,29 @@ while(player1Bust == false)
 
     String check2 = "stand"
 
-    if ((input.toLowerCase()).equals(check))
+    String check3 = "h"
+
+    String check4 = "s"
+
+    if ((input.toLowerCase()).equals(check) || input.toLowerCase().equals(check3))
     {   
         hand1 += deck.deal(1)
         player1Rank += hand1[1+handNumber].rank
-        println("Player 1 now has: " + hand1 + "\n")
+        println(name + " now has: " + hand1 + "\n")
         handNumber++
     }
 
     if (player1Rank > 21)
     {
         player1Bust = true
-        println("Player 2 Wins! with: " + hand2)
-        println("Player 1 Had: " + hand1)
+        println(p2Wins)
+        println("Dealer Wins! with: " + hand2)
+        println(name + " Had: " + hand1)
         break
     }
 
 
-    else if (input.toLowerCase().equals(check2))
+    else if (input.toLowerCase().equals(check2) || input.toLowerCase().equals(check4))
     {
         break
     }
@@ -111,7 +138,7 @@ while (player2Rank <= 14 && player1Bust == false)
 while (player2Rank > 14 && player2Rank < 20)
 {
     int ballsy = gen.nextInt(10)
-    if (ballsy == 7)
+    if (ballsy == 7 || ballsy == 6)
     {
         hand2 += deck.deal(1)
         player2Rank += hand2[1+handNumber].rank
@@ -131,46 +158,51 @@ while (player2Rank > 14 && player2Rank < 20)
 if (player2Rank > 21 && player1Bust == false)
 {
     player2Bust = true
-    println("Player 1 Wins! with: " + hand1)
-    println("Player 2 Had: " + hand2 + "\n")
+    println(p1Wins)
+    println(name + " Wins! with: " + hand1)
+    println("Dealer Had: " + hand2 + "\n")
 }
 
 int compare = player1Rank - player2Rank
 // If player 1 gets to 21, and neither him nor player 2 have busted, he wins
 if (player1Rank == 21 && player1Bust == false && player2Bust == false)
 {
-    println("Player 1 Wins! with: " + hand1)
-    println("Player 2 Had: " + hand2 + "\n")
+    println(p1Wins)
+    println(name + " Wins! with: " + hand1)
+    println("Dealer Had: " + hand2 + "\n")
 }
 // If player 2 gets to 21, and neither him nor player 1 have busted, he wins
 else if (player2Rank == 21 && player1Bust == false && player2Bust == false)
 {
-    println("Player 2 Wins! with: " + hand2)
-    println("Player 1 Had: " + hand1 + "\n")
+    println(p2Wins)
+    println("Dealer Wins! with: " + hand2)
+    println(name + " Had: " + hand1 + "\n")
 }
 // If both players stand, and player 1 has the most points, he wins
 else if (compare > 0 && player1Bust == false && player2Bust == false)
 {
-    println("Player 1 Wins! with: " + hand1)
-    println("Player 2 Had: " + hand2 + "\n")
+    println(p1Wins)
+    println(name + " Wins! with: " + hand1)
+    println("Dealer Had: " + hand2 + "\n")
 }
 // If both players stand, and player 2 has the most points, he wins
 else if (compare < 0 && player1Bust == false && player2Bust == false)
 {
-    println("Player 2 Wins! with: " + hand2)
-    println("Player 1 Had: " + hand1 + "\n")
+    println(p2Wins)
+    println("Dealer Wins! with: " + hand2)
+    println(name + " Had: " + hand1 + "\n")
 }
 // If they tie, they tie
 else if (compare == 0 && player1Bust == false && player2Bust == false)
 {
-    println("There is a Tie!\nPlayer 1 Has: " + hand1 + "\nPlayer 2 Has: " + hand2)
+    println("There is a Tie!\n" + name + " Has: " + hand1 + "\nDealer Has: " + hand2)
 }
 
 }// if loop
 
 if (totalNumGames > 1 && game != totalNumGames)
 {
-    println("------------------------ \n New Game: \n")
+    println("------------------------ \n\n New Game: \n\n")
 }
 //8. Person closest to or at 21 wins.
 
