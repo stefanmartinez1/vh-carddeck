@@ -18,13 +18,21 @@ String welcome = (" --------------------------\n|                          |\n| 
 println("\n\n\n" + welcome)
 println("|--------------------------|\n\n\n\nWhat is your name?\n")
 String name = console.readLine()
-println()
-println("Welcome, " + name + ".\nHow many games do you want to play? (Numbers only please)")
 
+println("\nWelcome, " + name + ".\nHow many games do you want to play? (Numbers only please)")
 int totalNumGames = (console.readLine()).toInteger()
 
+println("\nWith how risky of a Dealer would you like to play?\n(1) No-Risk-Randy\t(2) Somewhat-Safe\t(3) Risky\t(4) Super Ballsy")
+int ballsyLevel = (console.readLine()).toInteger()
+while (ballsyLevel < 1 || ballsyLevel > 4) 
+{
+    println("Please input a number between 1 and 4.")
+    ballsyLevel = (console.readLine()).toInteger()
+}
 
 for (int game = 1; game <= totalNumGames; game++)  {
+println("\n-------------|Game: |" + game + " of " + totalNumGames + "|----------------")
+
 //1. Dealer will shuffle the deck.
 println()
 deck.shuffle()
@@ -37,7 +45,7 @@ int numPlayers = 2
     def hand2 = deck.deal(2)
     println("Dealer's Hand: " + hand2 + "\n")
 
-//4. Your cards are added, Dealer's cards are added.
+//3. Your cards are added, Dealer's cards are added.
 
 int player1Rank = hand1[0].rank + hand1[1].rank
 int player2Rank = hand2[0].rank + hand2[1].rank
@@ -54,105 +62,116 @@ if (player2Rank > 21)
     player2Bust = true
 }
 
+// If player 1 gets to 21, and neither him nor player 2 have busted, he wins
 if (player1Rank == 21 && player1Bust == false && player2Bust == false)
 {
+    player2Bust = true
     println(p1Wins)
     println(name + " Wins! with: " + hand1)
     println("Dealer Had: " + hand2 + "\n")
-    break
 }
 // If player 2 gets to 21, and neither him nor player 1 have busted, he wins
 else if (player2Rank == 21 && player1Bust == false && player2Bust == false)
 {
+    player1Bust = true
     println(p2Wins)
     println("Dealer Wins! with: " + hand2)
     println(name + " Had: " + hand1 + "\n")
-    break
 }
 
-
-//5. You can choose to be hit, or stand.
+//4. You can choose to be hit, or stand.
 if (player1Bust == false && player2Bust == false) {
 
-println("Do you want to Hit or Stand?")
+    int handP1Number = 1
 
+    int handP2Number = 1
 
-while(player1Bust == false)
+while(player1Bust == false && player2Bust == false)
 {
-    
+    println("Do you want to Hit or Stand?")
+
     String input = console.readLine()
 
+    int player1Continue = 2
+    int player1Stop = 0
+    int player2Stop = 0
+
     String check = "hit"
-
-    int handNumber = 1
-
     String check2 = "stand"
-
     String check3 = "h"
-
     String check4 = "s"
 
-    if ((input.toLowerCase()).equals(check) || input.toLowerCase().equals(check3))
+    if (((input.toLowerCase()).equals(check) || input.toLowerCase().equals(check3)) && player1Rank <= 21)
     {   
         hand1 += deck.deal(1)
-        player1Rank += hand1[1+handNumber].rank
+        player1Rank += hand1[1+handP1Number].rank
         println(name + " now has: " + hand1 + "\n")
-        handNumber++
+        handP1Number++
+        player1Continue = 1
+
+        if ((player1Rank > 21 && player2Bust == false) || player2Rank == 21)
+        {
+            player1Bust = true
+            break
+        }
     }
-
-    if (player1Rank > 21)
-    {
-        player1Bust = true
-        println(p2Wins)
-        println("Dealer Wins! with: " + hand2)
-        println(name + " Had: " + hand1)
-        break
-    }
-
-
+        
     else if (input.toLowerCase().equals(check2) || input.toLowerCase().equals(check4))
     {
-        break
+        player1Stop = 1
     }
 
     else
     {
-        println("You have to input \"Hit\" or \"Stand\" to continue")
+        player1Continue = 0
+        println("You have to input \"Hit\" or \"Stand\" to continue.")
     }
 
-}
-
-
-//6. Dealer will choose to be hit if he is under or at 14, but not over it.
-int handNumber = 1
-while (player2Rank <= 14 && player1Bust == false)
-{
-    hand2 += deck.deal(1)
-    player2Rank += hand2[1+handNumber].rank
-    handNumber++
-    println("Dealer chose to hit, he now has: " + hand2 + "\n")
-}
-
-// The Dealer can be super ballsy sometimes
-
-while (player2Rank > 14 && player2Rank < 20)
-{
-    int ballsy = gen.nextInt(10)
-    if (ballsy == 7 || ballsy == 6)
+    // Dealer will choose to be hit if he is under or at 14, but not over it.
+    if (player2Rank <= 14 && player1Bust == false && (player1Continue == 1 || player1Continue == 2))
     {
         hand2 += deck.deal(1)
-        player2Rank += hand2[1+handNumber].rank
-        handNumber++
-        println("Dealer got ballsy and chose to hit, he now has: " + hand2 + "\n")
+        player2Rank += hand2[1+handP2Number].rank
+        handP2Number++
+        println("Dealer chose to hit, he now has: " + hand2 + "\n")
+    }
+    else {player2Stop = 1}
+
+    // The Dealer can be super ballsy sometimes..
+    if (ballsyLevel > 1 && player2Rank > 14 && player2Rank < 20 && (player1Continue == 1 || player1Continue == 2))
+    {
+        int ballsy = gen.nextInt(10)
+        if ((ballsyLevel == 2 && (ballsy == 7 || ballsy == 6)) || (ballsyLevel == 3 && (ballsy >= 4 && ballsy <= 8)) || (ballsyLevel == 4 && (ballsy >= 1)))
+        {
+            hand2 += deck.deal(1)
+            player2Rank += hand2[1+handP2Number].rank
+            handP2Number++
+            println("Dealer got ballsy and chose to hit, he now has: " + hand2 + "\n")
+        }
+    }
+    else {player2Stop = 1}
+
+    if ((player2Rank > 21 && player1Bust == false) || player1Rank == 21)
+    {
+            player2Bust = true
+            break
     }
 
-    else 
+    if (player1Stop == 1 && player2Stop == 1)
     {
         break
     }
-}
 
-//7. If you both choose to stand, then whoever has the most points wins. Can be tie.
+}// WHILE LOOP
+
+// If player 1 reaches more than 21, he busts and player 2 wins
+if (player1Rank > 21 && player2Bust == false)
+{
+    player1Bust = true
+    println(p2Wins)
+    println("Dealer Wins! with: " + hand2)
+    println(name + " Had: " + hand1 + "\n")
+}
 
 // If player 2 reaches more than 21, he busts and player 1 wins
 if (player2Rank > 21 && player1Bust == false)
@@ -162,6 +181,8 @@ if (player2Rank > 21 && player1Bust == false)
     println(name + " Wins! with: " + hand1)
     println("Dealer Had: " + hand2 + "\n")
 }
+
+//5. If you both choose to stand, then whoever has the most points wins. Can be tie.
 
 int compare = player1Rank - player2Rank
 // If player 1 gets to 21, and neither him nor player 2 have busted, he wins
@@ -200,11 +221,14 @@ else if (compare == 0 && player1Bust == false && player2Bust == false)
 
 }// if loop
 
+if (game != totalNumGames)
+sleep(4000)
+
 if (totalNumGames > 1 && game != totalNumGames)
 {
-    println("------------------------ \n\n New Game: \n\n")
+    println("------------------------------------------- \n\n New Game: ")//\n\n------------------------")
 }
-//8. Person closest to or at 21 wins.
+//6. Person closest to or at 21 wins.
 
 
 } // for loop
